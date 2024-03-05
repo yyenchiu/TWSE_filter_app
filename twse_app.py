@@ -1,12 +1,10 @@
 import numpy as np
 import pandas as pd
 
-
 import dash
 from dash import dash_table
 from dash import dcc
 from dash import html
-from dash.dependencies import Input, Output
 
 
 app = dash.Dash(__name__)
