@@ -1,5 +1,5 @@
 numpy
 pandas
 plotly
-dash==2.16.0
+dash==2.9.2
 gunicorn
