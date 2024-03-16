@@ -16,6 +16,10 @@ import io
 
 twse = pd.read_csv("TWSE_list.csv", header=0)
 tpex = pd.read_csv("TPEX_list.csv", header=0)
+
+app = dash.Dash(__name__)
+server = app.server
+
 if "daily_info" not in locals():
     twse_symbols = twse["Symbol"].to_list()
     tickers = [str(symbol)+".TW" for symbol in twse_symbols]
@@ -49,11 +53,8 @@ if "daily_info" not in locals():
 
     daily_info = pd.concat([twse, tpex], axis=0)
 
-app = dash.Dash(__name__)
-server = app.server
-
 app.layout = html.Div([
-    html.H1("上市櫃排行（2024年一月）", style={"text-align": "center"}),
+    html.H1("上市櫃排行", style={"text-align": "center"}),
     dcc.Upload(
         id='upload_data',
         children=html.Div([
