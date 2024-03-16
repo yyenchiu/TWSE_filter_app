@@ -3,4 +3,4 @@ pandas
 plotly
 dash==2.16.0
 gunicorn
-yfinancec
+yfinance
