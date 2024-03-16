@@ -29,8 +29,8 @@ if "daily_info" not in locals():
         twse_get_info = yf.Tickers(combined)
     for symbol in twse_symbols:
         stock = twse_get_info.tickers[str(symbol)+".TW"].info
-        for attribute in ["profitMargins", "bookValue", "priceToBook", "trailingEps", "forwardEps",
-        "trailingPE", "forwardPE"]:
+        for attribute in ["currentPrice", "grossMargins", "bookValue", "priceToBook", 
+                          "trailingEps", "forwardEps", "trailingPE", "forwardPE"]:
             if attribute in stock.keys():
                 twse.loc[symbol, attribute] = round(float(stock[attribute]), 2)
             else:
@@ -44,8 +44,8 @@ if "daily_info" not in locals():
         tpex_get_info = yf.Tickers(combined)
     for symbol in tpex_symbols:
         stock = tpex_get_info.tickers[str(symbol)+".TWO"].info
-        for attribute in ["profitMargins", "bookValue", "priceToBook", "trailingEps", "forwardEps",
-        "trailingPE", "forwardPE"]:
+        for attribute in ["currentPrice", "grossMargins", "bookValue", "priceToBook", 
+                          "trailingEps", "forwardEps","trailingPE", "forwardPE"]:
             if attribute in stock.keys():
                 tpex.loc[symbol, attribute] = round(float(stock[attribute]), 2)
             else:
@@ -151,25 +151,30 @@ def update_output(dfs, names):
             zip(dfs, names)]
         if len(contents)==1:
             final_df = contents[0].merge(daily_info, left_on="Symbol", right_on="Symbol", how="left")
-            final_df = final_df.set_axis(["代碼", "名稱", "月營收", 
-                               "年累計營收", "%MoM", "%YoY", "%YoY累計", "盈利率", "BPS", "P/B", 
-                               "EPS(12個月)", "EPS預測", "P/E", "P/E預測"], axis=1)
+            final_df = final_df.set_axis(["代碼", "年累計營收", "月營收", "名稱", "%MoM", "%YoY", 
+                                          "%YoY累計", "股價", "毛利率", "BPS", "P/B", "EPS(12個月)", 
+                                          "EPS預測", "P/E", "P/E預測"], axis=1)
             return dash_table.DataTable(
                     final_df.to_dict("records"),
-                    [{'name': i, 'id': i} for i in final_df.columns]
+                    [{'name': i, 'id': i} for i in final_df.columns],
+                    filter_action="native",
+                    sort_action='native',
+                    filter_options={"placeholder_text": "Filter column..."}
                 ),
         else:
             list_of_df = [parse_contents(c, n) for c, n in zip(dfs, names)]
             contents = pd.concat([list_of_df[0], list_of_df[1]])
             final_df = contents.merge(daily_info, left_on="Symbol", right_on="Symbol", how="left")
-            final_df = final_df.set_axis(["代碼", "名稱", "月營收", 
-                               "年累計營收", "%MoM", "%YoY", "%YoY累計", "盈利率", "BPS", "P/B", 
-                               "EPS(12個月)", "EPS預測", "P/E", "P/E預測"], axis=1)
+            final_df = final_df.set_axis(["代碼", "年累計營收", "月營收", "名稱", "%MoM", "%YoY", 
+                                          "%YoY累計", "股價", "毛利率", "BPS", "P/B", "EPS(12個月)", 
+                                          "EPS預測", "P/E", "P/E預測"], axis=1)
             return dash_table.DataTable(
                     final_df.to_dict("records"),
                     [{'name': i, 'id': i} for i in final_df.columns],
                     filter_action="native",
+                    sort_action='native',
                     filter_options={"placeholder_text": "Filter column..."},
                 ),
+
 if __name__ == '__main__':
     app.run_server(debug=False)
