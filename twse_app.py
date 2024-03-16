@@ -151,30 +151,28 @@ def update_output(dfs, names):
             zip(dfs, names)]
         if len(contents)==1:
             final_df = contents[0].merge(daily_info, left_on="Symbol", right_on="Symbol", how="left")
-            final_df = final_df.set_axis(["代碼", "年累計營收", "月營收", "名稱", "%MoM", "%YoY", 
+            final_df["Symbol"] = final_df["Symbol"].astype("str") + " " + final_df["Name"]
+            final_df.drop(["Name"], axis=1, inplace=True)
+            final_df = final_df.set_axis(["名稱", "月營收", "年累計營收", "%MoM", "%YoY", 
                                           "%YoY累計", "股價", "毛利率", "BPS", "P/B", "EPS(12個月)", 
                                           "EPS預測", "P/E", "P/E預測"], axis=1)
-            return dash_table.DataTable(
-                    final_df.to_dict("records"),
-                    [{'name': i, 'id': i} for i in final_df.columns],
-                    filter_action="native",
-                    sort_action='native',
-                    filter_options={"placeholder_text": "Filter column..."}
-                ),
         else:
             list_of_df = [parse_contents(c, n) for c, n in zip(dfs, names)]
             contents = pd.concat([list_of_df[0], list_of_df[1]])
             final_df = contents.merge(daily_info, left_on="Symbol", right_on="Symbol", how="left")
-            final_df = final_df.set_axis(["代碼", "年累計營收", "月營收", "名稱", "%MoM", "%YoY", 
+            final_df["Symbol"] = final_df["Symbol"].astype("str") + " " + final_df["Name"]
+            final_df.drop(["Name"], axis=1, inplace=True)
+            final_df = final_df.set_axis(["名稱", "月營收", "年累計營收", "%MoM", "%YoY", 
                                           "%YoY累計", "股價", "毛利率", "BPS", "P/B", "EPS(12個月)", 
                                           "EPS預測", "P/E", "P/E預測"], axis=1)
-            return dash_table.DataTable(
-                    final_df.to_dict("records"),
-                    [{'name': i, 'id': i} for i in final_df.columns],
-                    filter_action="native",
-                    sort_action='native',
-                    filter_options={"placeholder_text": "Filter column..."},
-                ),
+        return dash_table.DataTable(
+                final_df.to_dict("records"),
+                [{'name': i, 'id': i} for i in final_df.columns],
+                filter_action="native",
+                sort_action='native',
+                filter_options={"placeholder_text": "Filter column..."},
+            ),
+
 
 if __name__ == '__main__':
     app.run_server(debug=False)
