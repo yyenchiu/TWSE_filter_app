@@ -55,6 +55,9 @@ if "daily_info" not in locals():
 
 app.layout = html.Div([
     html.H1("上市櫃排行", style={"text-align": "center"}),
+    html.A("上市報表", href="https://www.twse.com.tw/zh/trading/statistics/index04.html"),
+    html.Div(),
+    html.A("上櫃報表", href="https://www.tpex.org.tw/web/regular_emerging/statistics/sales_revenue/list.php?l=zh-tw"),
     dcc.Upload(
         id='upload_data',
         children=html.Div([
@@ -98,6 +101,7 @@ def parse_contents(contents, filename):
                         df.drop(index=i, inplace=True)
                     elif len(df["Symbol"][i])<4:
                         df.drop(index=i, inplace=True)
+                df["Symbol"] = df["Symbol"].astype(int)
                 df.replace(0, np.nan, inplace=True)
                 df["%MoM"] = round((df["Cur_Month"]-
                                     df["Last_Month"])/df["Last_Month"]*100, 2)
