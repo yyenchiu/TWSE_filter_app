@@ -4,3 +4,4 @@ plotly
 dash==2.16.0
 gunicorn
 yfinance
+xlrd
